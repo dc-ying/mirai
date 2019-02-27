@@ -1,0 +1,41 @@
+version: '3'
+
+services:
+
+    mirai_cnc_and_loader:
+        image: mirai:cnc_and_loader
+        container_name: mirai_cnc_and_loader
+        restart: always
+        networks:
+           mirai_network:
+               ipv4_address: 192.168.1.75
+        command: sh /etc/entry.sh
+
+    mirai_bot:
+        image: mirai:bot
+        container_name: mirai_bot
+        restart: always
+        networks:
+           mirai_network:
+               ipv4_address: 192.168.1.100
+        command: /usr/src/Mirai-Source-Code/mirai/debug/mirai.dbg
+
+    mirai_database:
+        image: mysql:5.7
+        container_name: mirai_database
+        restart: always
+        volumes:
+            - ./log/mysql:/var/lib/mysql
+            - ./sql:/docker-entrypoint-initdb.d
+        networks:
+           mirai_network:
+               ipv4_address: 192.168.1.70
+        environment:
+            MYSQL_ROOT_PASSWORD: password
+
+networks:
+    mirai_network:
+        driver: bridge
+        ipam:
+           config:
+             - subnet: 192.168.1.0/16
